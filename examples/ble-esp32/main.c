@@ -63,9 +63,7 @@ void setup() {
 }
 
 void loop() {
-//    Serial.println("Loop");
     delay(10);
-
     if (ble.isConnected()) {
         const auto message = "Hello, BLE! " + String(millis());
         ble.writeToActual((uint8_t*) message.c_str(), message.length());
