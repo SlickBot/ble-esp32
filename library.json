@@ -1,6 +1,6 @@
 {
   "name": "ble-esp32",
-  "version": "1.0",
+  "version": "1.1",
   "keywords": "ble, bluetooth, esp32",
   "description": "A lightweight BLE library for ESP32.",
   "repository": {
