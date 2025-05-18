@@ -1,0 +1,12 @@
+{
+  "name": "ble-esp32",
+  "version": "1.0",
+  "keywords": "ble, bluetooth, esp32",
+  "description": "A lightweight BLE library for ESP32.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slickbot/ble-esp32"
+  },
+  "frameworks": ["arduino"],
+  "platforms": ["espressif32"]
+}
