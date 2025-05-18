@@ -33,10 +33,10 @@ void setup() {
     digitalWrite(BUILTIN_LED_PIN, LOW);
 
     ble.begin(
-        /* deviceName  */ "BLE Device",
-        /* serviceUuid */ "4ec11f8c-b68f-4f3a-a6d8-8df32f3a35e0",
-        /* actualUuid  */ "f702b345-8d1b-43df-b6fa-130d77bf30bc",
-        /* desiredUuid */ "bfe4d428-8d28-4427-9478-e6b649233482"
+        /* deviceName   */ "BLE Device",
+        /* serviceUuid  */ "4ec11f8c-b68f-4f3a-a6d8-8df32f3a35e0",
+        /* actualUuid   */ "f702b345-8d1b-43df-b6fa-130d77bf30bc",
+        /* requiredUuid */ "bfe4d428-8d28-4427-9478-e6b649233482"
     );
 
     ble.onConnectCallback = [] {
@@ -56,7 +56,7 @@ void setup() {
         Serial.println("---> " + String(pCharacteristic->getValue().c_str()));
     };
 
-    ble.onDesiredCallback = [](BLECharacteristic* pCharacteristic) {
+    ble.onRequestedCallback = [](BLECharacteristic* pCharacteristic) {
         Serial.println("<--- " + bytesToHexString(pCharacteristic->getData(), pCharacteristic->getLength()));
         Serial.println("<--- " + String(pCharacteristic->getValue().c_str()));
     };

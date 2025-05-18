@@ -9,7 +9,7 @@
 /**
  * @brief A helper class for setting up a BLE server with two characteristics:
  *        - one for sending notifications (actual)
- *        - one for receiving writes (desired)
+ *        - one for receiving writes (requested)
  *
  * The user can register callbacks for connection events and characteristic writes.
  */
@@ -23,13 +23,13 @@ public:
      * @param deviceName       The advertised BLE device name
      * @param serviceUuid      UUID of the BLE service
      * @param actualUuid       UUID for the "actual" notify characteristic
-     * @param desiredUuid      UUID for the "desired" write characteristic
+     * @param requestedUuid      UUID for the "requested" write characteristic
      */
     void begin(
         const char* deviceName,
         const char* serviceUuid,
         const char* actualUuid,
-        const char* desiredUuid
+        const char* requestedUuid
     ) {
         BLEDevice::init(deviceName);
 
@@ -47,13 +47,13 @@ public:
         pActualCharacteristic->addDescriptor(pActualDescriptor);
         pActualCharacteristic->setCallbacks(new ActualCallbacks(this));
 
-        // Setup write characteristic (desired)
-        pDesiredCharacteristic = pService->createCharacteristic(
-            desiredUuid, BLECharacteristic::PROPERTY_WRITE
+        // Setup write characteristic (requested)
+        pRequestedCharacteristic = pService->createCharacteristic(
+            requestedUuid, BLECharacteristic::PROPERTY_WRITE
         );
-        auto* pDesiredDescriptor = new BLE2902();
-        pDesiredCharacteristic->addDescriptor(pDesiredDescriptor);
-        pDesiredCharacteristic->setCallbacks(new DesiredCallbacks(this));
+        auto* pRequestedDescriptor = new BLE2902();
+        pRequestedCharacteristic->addDescriptor(pRequestedDescriptor);
+        pRequestedCharacteristic->setCallbacks(new RequestedCallbacks(this));
 
         pService->start();
 
@@ -72,8 +72,8 @@ public:
     /// Callback when the "actual" characteristic is written (usually shouldn't happen)
     std::function<void(BLECharacteristic* pCharacteristic)> onActualCallback;
 
-    /// Callback when the "desired" characteristic is written
-    std::function<void(BLECharacteristic* pCharacteristic)> onDesiredCallback;
+    /// Callback when the "requested" characteristic is written
+    std::function<void(BLECharacteristic* pCharacteristic)> onRequestedCallback;
 
     /**
      * @brief Check if a BLE device is currently connected.
@@ -98,7 +98,7 @@ public:
 private:
     BLEServer* pServer = nullptr;
     BLECharacteristic* pActualCharacteristic = nullptr;
-    BLECharacteristic* pDesiredCharacteristic = nullptr;
+    BLECharacteristic* pRequestedCharacteristic = nullptr;
     bool _isConnected = false;
 
     // Server connection state callbacks
@@ -128,12 +128,12 @@ private:
         BLEHandler* _handler;
     };
 
-    // Callback for desired value writes
-    class DesiredCallbacks final : public BLECharacteristicCallbacks {
+    // Callback for requested value writes
+    class RequestedCallbacks final : public BLECharacteristicCallbacks {
     public:
-        explicit DesiredCallbacks(BLEHandler* handler) : _handler(handler) {}
+        explicit RequestedCallbacks(BLEHandler* handler) : _handler(handler) {}
         void onWrite(BLECharacteristic* pCharacteristic) override {
-            if (_handler->onDesiredCallback) _handler->onDesiredCallback(pCharacteristic);
+            if (_handler->onRequestedCallback) _handler->onRequestedCallback(pCharacteristic);
         }
     private:
         BLEHandler* _handler;
